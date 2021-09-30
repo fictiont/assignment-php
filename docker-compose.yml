@@ -14,7 +14,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: php.Dockerfile
+      dockerfile: app-init/php.Dockerfile
     volumes:
       - ./app:/var/www/html/app:cached
     depends_on:
@@ -25,7 +25,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./app-init/nginx.conf:/etc/nginx/conf.d/nginx.conf
       - ./app:/var/www/html/app:cached
     depends_on:
       - php
