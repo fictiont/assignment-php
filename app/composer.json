@@ -1,11 +1,11 @@
 {
-  "name": "lokalise/assignment-php",
+  "name": "fictiont/assignment-php",
   "description": "Lokalise homework for PHP developers",
   "type": "project",
   "authors": [
     {
-      "name": "Arturs Ziborovs",
-      "email": "arthur@lokalise.com"
+      "name": "Ihor Savchenko",
+      "email": "fictiontweb@gmail.com"
     }
   ],
   "minimum-stability": "stable",

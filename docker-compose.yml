@@ -4,8 +4,8 @@ services:
   mysql:
     image: mysql:5.7.18
     environment:
-      MYSQL_ROOT_PASSWORD: 'very-secret-assignment-password'
-      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      MYSQL_ROOT_HOST: '${MYSQL_ROOT_HOST}'
     volumes:
       - mysqldata:/var/lib/mysql
     ports:

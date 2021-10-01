@@ -1,0 +1,16 @@
+app/vendor/
+app/composer.lock
+###> symfony/framework-bundle ###
+app/config/secrets/prod/prod.decrypt.private.php
+app/public/bundles/
+app/var/
+app/cache/*
+app/logs/*
+!app/cache/.gitkeep
+!app/logs/.gitkeep
+app/config/*
+.env
+app/bin/*
+app/symfony.lock
+app/src/Kernel.php
+###< symfony/framework-bundle ###
