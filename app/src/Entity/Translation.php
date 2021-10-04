@@ -11,9 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiProperty;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
@@ -23,10 +26,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                      columns={"language_ISO", "key_id"})
  *              })
  * @ApiResource(
- *     normalizationContext={"groups"={"translation"}},
  *     collectionOperations={
  *         "get",
- *         "post"={"security"="is_granted('ROLE_FULL')"}
+ *         "post"={
+ *              "security"="is_granted('ROLE_FULL')"
+ *         }
  *     },
  *     itemOperations={
  *         "get",
@@ -35,6 +39,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *     attributes={"security"="is_granted('ROLE_USER')"}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"language":"exact","key":"exact"})
  */
 class Translation
 {
@@ -54,17 +59,17 @@ class Translation
      * Related Language entity IRI path.
      *
      * @ORM\ManyToOne(targetEntity="Language", inversedBy="translations")
-     * @ORM\JoinColumn(name="language_ISO", referencedColumnName="iso")
-     * @Groups("translation")
+     * @ORM\JoinColumn(name="language_ISO", referencedColumnName="iso", nullable=false)
+     * @Assert\Valid()
      */
     private $language;
 
     /**
-     * Related Key entity.
+     * Related Key entity IRI path.
      *
      * @ORM\ManyToOne(targetEntity="Key", inversedBy="translations")
-     * @ORM\JoinColumn(name="key_id", referencedColumnName="id")
-     * @Groups("translation")
+     * @ORM\JoinColumn(name="key_id", referencedColumnName="id", nullable=false)
+     * @Assert\Valid()
      */
     private $key;
 
@@ -74,7 +79,12 @@ class Translation
      *
      * @ORM\Column(length=512)
      * @Assert\NotBlank()
-     * @Groups("translation")
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 512,
+     *      minMessage = "Translation must be at least {{ limit }} characters long",
+     *      maxMessage = "Translation cannot be longer than {{ limit }} characters"
+     * )
      */
     private string $translation;
 

@@ -10,9 +10,11 @@ app/logs/*
 !app/logs/.gitkeep
 
 app/config/*
-app/config/packages/*
 !app/config/routes.yaml
 !app/config/jwt_init.sh
+!app/config/services.yaml
+
+app/config/packages/*
 !app/config/packages/
 !app/config/packages/api_platform.yaml
 !app/config/packages/doctrine.yaml

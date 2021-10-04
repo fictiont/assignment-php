@@ -11,14 +11,31 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
- 
+
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="language", indexes={@ORM\Index(name="language_name", columns={"name"})})
- * @ApiResource(itemOperations={"get"}, collectionOperations={})
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get",
+ *         "post"={
+ *              "security"="is_granted('ROLE_FULL')"
+ *         }
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "patch"={"security"="is_granted('ROLE_FULL')"},
+ *         "delete"={"security"="is_granted('ROLE_FULL')"}
+ *     },
+ *     attributes={"security"="is_granted('ROLE_USER')","pagination_enabled"=false}
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"iso":"partial","name":"partial"})
  */
 class Language
 {
@@ -28,6 +45,7 @@ class Language
      * @ORM\Id
      * @ORM\Column(length=3, unique=true)
      * @Assert\NotBlank()
+     * @Assert\Language(alpha3=true)
      */
     private string $iso;
 
@@ -36,6 +54,12 @@ class Language
      *
      * @ORM\Column(length=70)
      * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 70,
+     *      minMessage = "Language name must be at least {{ limit }} characters long",
+     *      maxMessage = "Language name cannot be longer than {{ limit }} characters"
+     * )
      */
     private string $name;
  
@@ -51,7 +75,7 @@ class Language
     /**
      * List of existing translations related to this language.
      *
-     * @ORM\OneToMany(targetEntity="Translation", mappedBy="language")
+     * @ORM\OneToMany(targetEntity="Translation", mappedBy="language", cascade={"remove"})
      */
     private $translations;
 

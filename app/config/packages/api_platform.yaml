@@ -9,3 +9,8 @@ api_platform:
             apiKey:
                 name: Authorization
                 type: header
+    enable_swagger_ui: false
+    enable_re_doc: false
+    show_webby: false
+    title: 'TMS API'
+    version: '0.0.1'

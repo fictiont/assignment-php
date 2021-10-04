@@ -14,8 +14,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity
@@ -33,6 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *     attributes={"security"="is_granted('ROLE_USER')"}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"keyCode":"partial"})
  */
 class Key
 {
@@ -44,7 +48,6 @@ class Key
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups("translation")
      */
     private string $id;
 
@@ -53,7 +56,12 @@ class Key
      *
      * @ORM\Column(length=120, unique=true)
      * @Assert\NotBlank()
-     * @Groups("translation")
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 120,
+     *      minMessage = "Key code must be at least {{ limit }} characters long",
+     *      maxMessage = "Key code cannot be longer than {{ limit }} characters"
+     * )
      */
     private string $keyCode;
 
@@ -61,6 +69,12 @@ class Key
      * Key description in english language.
      *
      * @ORM\Column(length=512)
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 512,
+     *      minMessage = "Key description must be at least {{ limit }} characters long",
+     *      maxMessage = "Key description cannot be longer than {{ limit }} characters"
+     * )
      * @Assert\NotBlank()
      */
     private string $description;
@@ -68,7 +82,7 @@ class Key
     /**
      * List of translations related to current key.
      *
-     * @ORM\OneToMany(targetEntity="Translation", mappedBy="key")
+     * @ORM\OneToMany(targetEntity="Translation", mappedBy="key", cascade={"remove"})
      */
     private $translations;
 
