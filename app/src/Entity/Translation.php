@@ -22,7 +22,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                  @UniqueConstraint(name="uniq_translation_key_language",
  *                      columns={"language_ISO", "key_id"})
  *              })
- * @ApiResource(normalizationContext={"groups"={"translation"}},itemOperations={"get","patch","delete"})
+ * @ApiResource(
+ *     normalizationContext={"groups"={"translation"}},
+ *     collectionOperations={
+ *         "get",
+ *         "post"={"security"="is_granted('ROLE_FULL')"}
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "patch"={"security"="is_granted('ROLE_FULL')"},
+ *         "delete"={"security"="is_granted('ROLE_FULL')"}
+ *     },
+ *     attributes={"security"="is_granted('ROLE_USER')"}
+ * )
  */
 class Translation
 {

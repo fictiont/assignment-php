@@ -8,9 +8,22 @@ app/cache/*
 app/logs/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
+
 app/config/*
+app/config/packages/*
+!app/config/routes.yaml
+!app/config/jwt_init.sh
+!app/config/packages/
+!app/config/packages/api_platform.yaml
+!app/config/packages/doctrine.yaml
+!app/config/packages/security.yaml
+
 .env
 app/bin/*
 app/symfony.lock
 app/src/Kernel.php
 ###< symfony/framework-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+app/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###

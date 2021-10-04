@@ -21,7 +21,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="translation_key")
- * @ApiResource(itemOperations={"get","patch","delete"})
+ * @ApiResource(
+ *     collectionOperations={
+ *         "get",
+ *         "post"={"security"="is_granted('ROLE_FULL')"}
+ *     },
+ *     itemOperations={
+ *         "get",
+ *         "patch"={"security"="is_granted('ROLE_FULL')"},
+ *         "delete"={"security"="is_granted('ROLE_FULL')"}
+ *     },
+ *     attributes={"security"="is_granted('ROLE_USER')"}
+ * )
  */
 class Key
 {
