@@ -21,6 +21,7 @@
     "doctrine/orm": "^2.9",
     "nelmio/cors-bundle": "^2.1",
     "phpdocumentor/reflection-docblock": "^5.2",
+    "ramsey/uuid-doctrine": "^1.7",
     "symfony/asset": "5.3.*",
     "symfony/console": "5.3.*",
     "symfony/dotenv": "5.3.*",
@@ -34,6 +35,7 @@
     "symfony/security-bundle": "5.3.*",
     "symfony/serializer": "5.3.*",
     "symfony/twig-bundle": "5.3.*",
+    "symfony/uid": "5.3.*",
     "symfony/validator": "5.3.*",
     "symfony/yaml": "5.3.*"
   },
@@ -79,5 +81,8 @@
       "allow-contrib": false,
       "require": "5.3.*"
     }
+  },
+  "require-dev": {
+    "symfony/maker-bundle": "^1.34"
   }
 }
