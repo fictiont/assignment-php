@@ -17,6 +17,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
@@ -30,12 +31,57 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *         "get",
  *         "post"={
  *              "security"="is_granted('ROLE_FULL')"
+ *         },
+ *         "export"={
+ *             "route_name"="keys_export_controller",
+ *             "defaults"={"_api_receive"=false},
+ *             "read"=false,
+ *             "pagination_enabled"=false,
+ *             "filters"={},
+ *             "openapi_context" = {
+ *                 "summary" = "Export translations",
+ *                 "description" = "Based on format specified (json as default) export all translations created in the system into ZIP Archive and returns archive encoded in base64",
+ *                 "parameters" = {
+ *                     {
+ *                         "name" = "format",
+ *                         "in" = "path",
+ *                         "required" = false,
+ *                         "type" = "string",
+ *                         "enum" = {"json","yaml"},
+ *                         "description" = "Format of export (default - json), could be:<br>json<br>yaml"
+ *                      }
+ *                  },
+ *                  "responses" = {
+ *                      "200" = {
+ *                        "description" = "ZIP Archive converted to base64 and presented in document object.",
+ *                        "content" = {
+ *                            "application/json" = {
+ *                                "schema" = {
+ *                                    "type" = "object",
+ *                                    "properties" = {
+ *                                      "base64Content" = {
+ *                                          "type" = "string",
+ *                                          "description" = "File content encoded in base64"
+ *                                      },
+ *                                      "contentType" = {
+ *                                          "type" = "string",
+ *                                          "description" = "Content type"
+ *                                      },
+ *                                    }
+ *                                 }
+ *                            }
+ *                        }
+ *                      }
+ *                  },
+ *                  "normalization_context" = {"groups" = "translations_export"}
+ *             },
+ *             "security"="is_granted('ROLE_FULL')"
  *         }
  *     },
  *     itemOperations={
  *         "get",
  *         "patch"={"security"="is_granted('ROLE_FULL')"},
- *         "delete"={"security"="is_granted('ROLE_FULL')"}
+ *         "delete"={"security"="is_granted('ROLE_FULL')"},
  *     },
  *     attributes={"security"="is_granted('ROLE_USER')"}
  * )
