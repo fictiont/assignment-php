@@ -3,6 +3,22 @@ if [ "$EUID" -ne 0 ]
   then echo "[ERROR] Please run this script as root with 'sudo ./app-init/init.sh'. This is needed to modify config files created by docker-compose"
   exit
 fi
+if [ -z "${MYSQL_ROOT_PASSWORD}" ]
+	then echo "[ERROR-MYSQL_ROOT_PASSWORD] Please setup .env file. Possibly you forgot to rename .env.sample one and change environments there?"
+	exit
+fi
+if [ -z "${MYSQL_DB_NAME}" ]
+	then echo "[ERROR-MYSQL_DB_NAME] Please setup .env file. Possibly you forgot to rename .env.sample one and change environments there?"
+	exit
+fi
+if [ -z "${MYSQL_PASSWORD}" ]
+	then echo "[ERROR-MYSQL_PASSWORD] Please setup .env file. Possibly you forgot to rename .env.sample one and change environments there?"
+	exit
+fi
+if [ -z "${MYSQL_USER}" ]
+	then echo "[ERROR-MYSQL_USER] Please setup .env file. Possibly you forgot to rename .env.sample one and change environments there?"
+	exit
+fi
 #building images
 docker-compose build
 #starting containers
