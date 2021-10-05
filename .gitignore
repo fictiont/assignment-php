@@ -29,3 +29,15 @@ app/src/Kernel.php
 ###> lexik/jwt-authentication-bundle ###
 app/config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+app/phpunit.xml*
+app/.env.test
+app/tests/bootstrap.php
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+app/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

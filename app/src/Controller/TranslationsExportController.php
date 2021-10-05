@@ -99,10 +99,9 @@ class TranslationsExportController extends AbstractController
             'base64Content' => ''
         );
         /**
-         * tmpfile() function used as it creates temporary file and destroy it when script ends, no need to clean ourselves.
+         * tmpnam function provides path to system temporary file, which should be cleaned when not needed anymore.
          */
-        $tempArchive = tmpfile();
-        $tempArchivePath = stream_get_meta_data($tempArchive)['uri'];
+        $tempArchivePath = tempnam('', 'zip_');
         $zip = new \ZipArchive();
         $zip->open($tempArchivePath);
 
@@ -124,7 +123,7 @@ class TranslationsExportController extends AbstractController
          */
         $zip->close();
         $responseDocument['base64Content'] = base64_encode(file_get_contents($tempArchivePath));
-        unset($tempArchive);
+        unlink($tempArchivePath);
 
         return new JsonResponse($responseDocument);
     }

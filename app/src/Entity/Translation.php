@@ -33,6 +33,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *              "security"="is_granted('ROLE_FULL')"
  *         },
  *         "export"={
+ *             "method" = "GET",
  *             "route_name"="keys_export_controller",
  *             "defaults"={"_api_receive"=false},
  *             "read"=false,
