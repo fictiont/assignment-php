@@ -5,7 +5,9 @@ services:
     image: mysql:5.7.18
     environment:
       MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
-      MYSQL_ROOT_HOST: '${MYSQL_ROOT_HOST}'
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysqldata:/var/lib/mysql
     ports:
