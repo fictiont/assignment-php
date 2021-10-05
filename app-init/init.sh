@@ -6,8 +6,8 @@ docker-compose up -d
 #checking composer dependencies
 docker-compose exec php bash -c "composer update"
 #create databases
-docker-compose exec php bash -c "bin/console doctrine:database:create"
-docker-compose exec php bash -c "APP_ENV=test bin/console doctrine:database:create"
+docker-compose exec php bash -c "bin/console doctrine:database:create --if-not-exists"
+docker-compose exec php bash -c "APP_ENV=test bin/console doctrine:database:create --if-not-exists"
 #apply database migrations
 docker-compose exec php bash -c "bin/console doctrine:migrations:migrate --no-interaction"
 docker-compose exec php bash -c "APP_ENV=test bin/console doctrine:migrations:migrate --no-interaction"
