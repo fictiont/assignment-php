@@ -1,5 +1,8 @@
 #!/bin/bash
-
+if [ "$EUID" -ne 0 ]
+  then echo "[ERROR] Please run this script as root with 'sudo ./app-init/init.sh'. This is needed to modify config files created by docker-compose"
+  exit
+fi
 #building images
 docker-compose build
 #starting containers

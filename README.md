@@ -66,7 +66,7 @@ You would need to create the following entities (feel free to add or modify them
 - The quality and structure of the code is important, so use the best coding practices that you know
 - Unit tests will be considered a plus
 
-## Included development environment
+## Included development environment (updated)
 You can find a simple Dockerized development environment included with this assignment. Please follow the steps below to set it up (or use your own environment, however, please make sure to include instructions on how to run it).
 
 #### 1. Install Docker CE & Docker Compose
@@ -76,16 +76,22 @@ You can find a simple Dockerized development environment included with this assi
 
 Bonus: [Linux Post-install](https://docs.docker.com/engine/installation/linux/linux-postinstall/)
 
-#### 2. Build the containers and bring them online
+#### 2. Setup environment secrets
+- Navigate to the project folder and rename .env.sample to .env
+- Open .env file with text editor and replace sample variables values. *PASSWORD variables values are mandatory to be replaced.
+
+#### 3. Bring application up
 - Make sure that Docker is running
 - Navigate to the project folder using a Terminal
-- Run the `docker-compose up -d` command to bring the containers online
-
-#### 3. Running `composer install`
-After making modifications to `composer.json` you can run the `docker-compose exec php bash -c "php composer.phar install"` command to perform the installation
+- Run the `sudo ./app-init/init.sh` script to bring the app online. Script needed to be run as sudo, since it needs an access to files created by docker compose which have root permissions by default.
 
 #### 4. Accessing the MySQL database
-The environment includes the `phpmyadmin` tool. In order to access it, use the http://127.0.0.1:8080 URL. Use `mysql` as the Server name, `root` as the User and you can find the password inside the `docker-compose.yml` file.
+The environment includes the `phpmyadmin` tool. In order to access it, use the http://127.0.0.1:8080 URL. Use `mysql` as the Server name, `root` as the User and password you set before in .env file.
 
 #### 5. Running the application
-Use the http://127.0.0.1 URL to access your application
+Use the http://127.0.0.1 URL to access your application, opening it you should be redirected to http://127.0.0.1/docs where API docs are available in OpenAPI format.
+
+#### 6. Executing requests
+Upon application deployment two dummy users being created which you may use to authenticate and test api:
+- username: `test_readonly@gmail.com`, password: `testreadpassword`. This user has readonly permissions, only GET requests will be available;
+- username: `test_full@gmail.com`, password: `testfullpassword`. This user has full permissions, all API requests will be available;
