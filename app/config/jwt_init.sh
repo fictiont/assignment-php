@@ -1,4 +1,4 @@
-#bin/bash
+#!/bin/bash
 if [ ! -d "/path/to/dir" ] 
 then
 	mkdir -p config/jwt

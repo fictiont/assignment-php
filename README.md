@@ -83,7 +83,7 @@ Bonus: [Linux Post-install](https://docs.docker.com/engine/installation/linux/li
 #### 3. Bring application up
 - Make sure that Docker is running
 - Navigate to the project folder using a Terminal
-- Run the `sudo ./app-init/init.sh` script to bring the app online. Script needed to be run as sudo, since it needs an access to files created by docker compose which have root permissions by default.
+- Run the `sudo ./app-init/init.sh` script to bring the app online. Script needed to be run as sudo, since it needs an access to files created by docker compose which have root permissions by default and also it created openssl certs.
 
 #### 4. Accessing the MySQL database
 The environment includes the `phpmyadmin` tool. In order to access it, use the http://127.0.0.1:8080 URL. Use `mysql` as the Server name, `root` as the User and password you set before in .env file.

@@ -63,10 +63,12 @@ docker-compose exec php bash -c "APP_ENV=test bin/console doctrine:database:crea
 #apply database migrations
 docker-compose exec php bash -c "bin/console doctrine:migrations:migrate --no-interaction"
 docker-compose exec php bash -c "APP_ENV=test bin/console doctrine:migrations:migrate --no-interaction"
-#configure keys for JWT
-docker-compose exec php bash -c "./config/jwt_init.sh"
 #create example users
 docker-compose exec php bash -c "bin/console doctrine:fixtures:load --append --no-interaction"
 docker-compose exec php bash -c "APP_ENV=test bin/console doctrine:fixtures:load --append --no-interaction"
 #execute tests
 docker-compose exec php bash -c "bin/phpunit"
+echo "Configuring openssl keys for JWT token"
+sleep(5)
+#configure keys for JWT
+docker-compose exec php bash -c "./config/jwt_init.sh"
