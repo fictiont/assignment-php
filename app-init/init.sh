@@ -65,9 +65,9 @@ docker-compose exec php bash -c "bin/console doctrine:migrations:migrate --no-in
 docker-compose exec php bash -c "APP_ENV=test bin/console doctrine:migrations:migrate --no-interaction"
 
 echo "Configuring openssl keys for JWT token"
-sleep 5
 #configure keys for JWT
 docker-compose exec php bash -c "./config/jwt_init.sh"
+docker-compose exec php bash -c "chmod 0670 config/jwt/private.pem"
 
 #create example users
 docker-compose exec php bash -c "bin/console doctrine:fixtures:load --append --no-interaction"

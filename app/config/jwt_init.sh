@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! -d "/path/to/dir" ] 
+if [ ! -d "config/jwt" ] 
 then
 	mkdir -p config/jwt
 	setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
