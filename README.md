@@ -1,4 +1,6 @@
 # Lokalise PHP homework
+**Task is done, check section `Included development environment` for updated installation instructions.**
+
 Hello and welcome!
 
 Your task is to create a simple REST API for a mini Translation Management System (TMS) plus the underlying MySQL database structure. You will have a Dockerized development environment as well as a couple of tools provided to get you started, however, you have full creative freedom in choosing the way you want to complete this task.
@@ -83,8 +85,7 @@ Bonus: [Linux Post-install](https://docs.docker.com/engine/installation/linux/li
 #### 3. Bring application up
 - Make sure that Docker is running
 - Navigate to the project folder using a Terminal
-- Run the `sudo ./app-init/init.sh` script to bring the app online. 
-Script needed to be run as sudo, since it needs an access to files created by docker compose which have root permissions by default and also it created openssl certs.
+- Run the `sudo ./app-init/init.sh` script to bring the app online. Script needed to be run as sudo, since it needs an access to files created by docker compose which have root permissions by default.
 
 #### 4. Accessing the MySQL database
 The environment includes the `phpmyadmin` tool. In order to access it, use the http://127.0.0.1:8080 URL. Use `mysql` as the Server name, `root` as the User and password you set before in .env file.
