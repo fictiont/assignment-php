@@ -9,7 +9,6 @@
 namespace App\Entity;
 
 use Symfony\Component\Uid\Uuid;
-use Doctrine\ORM\PersistentCollection as PersistentCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -140,13 +139,5 @@ class Key
     public function __toString()
     {
         return $this->keyCode;
-    }
-
-    /**
-     * Constructor where we set default values
-     */
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
     }
 }

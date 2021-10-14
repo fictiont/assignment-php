@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Mime\FileinfoMimeTypeGuesser;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Language;
-use App\Entity\Key;
-use App\Entity\Translation;
+use App\Repository\LanguageRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -32,19 +33,14 @@ use Symfony\Component\HttpFoundation\Request;
 class TranslationsExportController extends AbstractController
 {
     /**
-     * @Route(
-     *     name="keys_export_controller",
-     *     path="/api/translations/export",
-     *     methods={"GET"},
-     *     defaults={"_api_item_operation_name"="translations_export"}
-     * )
-     * @return JsonResponse export response
+     * Controller for api/translation/export method.
+     * This method returns list of translations per each language.
+     * @return Response zip file containing either json/yaml (depending on format parameter) files with translations
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request, LanguageRepository $languageRepository): Response
     {
         //TODO put this into message bus and return order ID upon request, as export could
         //take a lot of time on big data volumes.
-
         /**
          * Fetch format from request GET parameter `format`.
          * It could be only `json` or `yaml`.
@@ -61,34 +57,7 @@ class TranslationsExportController extends AbstractController
             }
         }
 
-        /**
-         * Fetch all translations per language into formattedDataAsc variable.
-         * This could be done with one query on Translations table,
-         * but was splitted per language for better performance on huge data.
-         */
-        $em =  $this->getDoctrine()->getManager();
-        $languages = $em
-            ->getRepository(Language::class)
-            ->findAll();
-        $formattedDataAsc = array();
-        foreach ($languages as $language) {
-            $translations = $em
-                ->getRepository(Translation::class)
-                ->findBy(['language' => $language->getIso()]);
-
-            foreach ($translations as $translation) {
-                $tLang = $translation->getLanguage()->getIso();
-                $tKey = $translation->getKey()->getKeyCode();
-
-                if (!isset($formattedDataAsc[$tLang])) {
-                    $formattedDataAsc[$tLang] = array();
-                }
-                if (!isset($formattedDataAsc[$tLang][$tKey])) {
-                    $formattedDataAsc[$tLang][$tKey] = $translation->getTranslation();
-                }
-            }
-        }
-        unset($translations);
+        $formattedTranslations = $languageRepository->exportTranslations();
 
         /**
          * Return document as JSON object which has type, name and content encode with base64.
@@ -102,6 +71,7 @@ class TranslationsExportController extends AbstractController
          * tmpnam function provides path to system temporary file, which should be cleaned when not needed anymore.
          */
         $tempArchivePath = tempnam('', 'zip_');
+        rename($tempArchivePath, $tempArchivePath .= '.zip');
         $zip = new \ZipArchive();
         $zip->open($tempArchivePath);
 
@@ -110,21 +80,39 @@ class TranslationsExportController extends AbstractController
          * for JSON we store it in multiple files per each language.
          */
         if ('yaml' === $format) {
-            $formattedDataAsc = yaml_emit($formattedDataAsc);
-            $zip->addFromString('translations.yaml', $formattedDataAsc);
+            $zip->addFromString('translations.yaml', yaml_emit($formattedTranslations));
         } elseif ('json' === $format) {
-            foreach ($formattedDataAsc as $lang => $keys) {
+            foreach ($formattedTranslations as $lang => $keys) {
                 $zip->addFromString($lang.'.json', json_encode($keys));
             }
         }
-
         /**
          * Fetch created ZIP content, encode it with base64 and put into response
          */
         $zip->close();
-        $responseDocument['base64Content'] = base64_encode(file_get_contents($tempArchivePath));
+        
+        /**
+        * Create response as zip file stream
+        */
+        $responseObj = new Response(file_get_contents($tempArchivePath));
+        $disposition = $responseObj->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            basename($tempArchivePath)
+        );
+        $responseObj->headers->set('Content-Disposition', $disposition);
+        $mimeTypeGuesser = new FileinfoMimeTypeGuesser();
+
+        if ($mimeTypeGuesser->isGuesserSupported()) {
+            $responseObj->headers->set('Content-Type', $mimeTypeGuesser->guessMimeType($tempArchivePath));
+        } else {
+            $responseObj->headers->set('Content-Type', 'text/plain');
+        }
+
+        /**
+         * Cleaning temporary created zip archive
+         */
         unlink($tempArchivePath);
 
-        return new JsonResponse($responseDocument);
+        return $responseObj;
     }
 }

@@ -12,9 +12,9 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Controller\TranslationsExportController;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
@@ -34,7 +34,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *         },
  *         "export"={
  *             "method" = "GET",
- *             "route_name"="keys_export_controller",
+ *             "path" = "/translations/export",
+ *             "controller" = TranslationsExportController::class,
  *             "defaults"={"_api_receive"=false},
  *             "read"=false,
  *             "pagination_enabled"=false,
@@ -54,29 +55,18 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *                  },
  *                  "responses" = {
  *                      "200" = {
- *                        "description" = "ZIP Archive converted to base64 and presented in document object.",
+ *                        "description" = "ZIP Archive binary file.",
  *                        "content" = {
- *                            "application/json" = {
- *                                "schema" = {
- *                                    "type" = "object",
- *                                    "properties" = {
- *                                      "base64Content" = {
- *                                          "type" = "string",
- *                                          "description" = "File content encoded in base64"
- *                                      },
- *                                      "contentType" = {
- *                                          "type" = "string",
- *                                          "description" = "Content type"
- *                                      },
- *                                    }
- *                                 }
+ *                            "application/zip" = {
+ *                                "type" = "object"
  *                            }
  *                        }
  *                      }
  *                  },
  *                  "normalization_context" = {"groups" = "translations_export"}
  *             },
- *             "security"="is_granted('ROLE_FULL')"
+ *             "security"="is_granted('ROLE_FULL')",
+ *             "output_formats"={"zip"={"application/zip"}}
  *         }
  *     },
  *     itemOperations={

@@ -33,7 +33,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *         "patch"={"security"="is_granted('ROLE_FULL')"},
  *         "delete"={"security"="is_granted('ROLE_FULL')"}
  *     },
- *     attributes={"security"="is_granted('ROLE_USER')","pagination_enabled"=false}
+ *     attributes={
+ *         "security"="is_granted('ROLE_USER')",
+ *         "pagination_enabled"=false,
+ *         "normalization_context"={"groups"={"get","post"}}
+ *     }
  * )
  * @ApiFilter(SearchFilter::class, properties={"iso":"partial","name":"partial"})
  */
@@ -46,6 +50,7 @@ class Language
      * @ORM\Column(length=3, unique=true)
      * @Assert\NotBlank()
      * @Assert\Language(alpha3=true)
+     * @Groups({"get","post"})
      */
     private string $iso;
 
@@ -60,6 +65,7 @@ class Language
      *      minMessage = "Language name must be at least {{ limit }} characters long",
      *      maxMessage = "Language name cannot be longer than {{ limit }} characters"
      * )
+     * @Groups({"get","post"})
      */
     private string $name;
  
@@ -68,6 +74,7 @@ class Language
      * When set to true - language is RTL, otherwise - LTR.
      *
      * @ORM\Column(type="boolean")
+     * @Groups({"get","post"})
      * Specify if language is Right To Left or opposite.
      */
     private bool $rtl = false;
@@ -92,10 +99,30 @@ class Language
      * Setter for language ISO code
      * @return Language self
      */
-    public function setIso($code): self
+    public function setIso(string $code): self
     {
         $this->iso = mb_substr($code, 0, 3, 'UTF-8');
 
+        return $this;
+    }
+
+    /**
+     * Getter for rtl field
+     * @return bool rtl field value
+     */
+    public function getRtl(): bool
+    {
+        return $this->rtl;
+    }
+
+    /**
+     * Setter for rtl field
+     * @return bool self
+     */
+    public function setRtl(bool $rtl): self
+    {
+        $this->rtl = $rtl;
+        
         return $this;
     }
 
@@ -118,7 +145,16 @@ class Language
 
         return $this;
     }
-    
+        
+    /**
+     * Getter for translations
+     * @return Doctrine\ORM\PersistentCollection associated translations list
+     */
+    public function getTranslations(): \Doctrine\ORM\PersistentCollection
+    {
+        return $this->translations;
+    }
+
     /**
      * When object casts to string - use language name
      * @return string language name
@@ -126,13 +162,5 @@ class Language
     public function __toString()
     {
         return $this->name;
-    }
-
-    /**
-     * Constructor where we set default values
-     */
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
     }
 }
